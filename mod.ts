@@ -35,8 +35,8 @@ const deserialize = (str: string, shouldThrow: boolean = false): object => {
 };
 
 // provide import flexibility, e.g.:
-//  import { SerializeSimple } from 'https://deno.land/x/serialize-simple/mod.ts'
-//  import { deserialize } from 'https://deno.land/x/serialize-simple/mod.ts'
+//  import { SerializeSimple } from 'https://deno.land/x/serialize_simple/mod.ts'
+//  import { deserialize } from 'https://deno.land/x/serialize_simple/mod.ts'
 const SerializeSimple = { serialize, deserialize };
 export {
   SerializeSimple,

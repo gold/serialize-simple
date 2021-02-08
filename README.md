@@ -1,12 +1,12 @@
-# serialize-simple
+# serialize_simple
 
 ## Usage
 ```javascript
-import { SerializeSimple } from 'https://deno.land/x/serialize-simple/mod.ts';
+import { SerializeSimple } from 'https://deno.land/x/serialize_simple/mod.ts';
 
 // OR
 
-import { serialize, deserialize } from 'https://deno.land/x/serialize-simple/mod.ts';
+import { serialize, deserialize } from 'https://deno.land/x/serialize_simple/mod.ts';
 
 const obj = { data: [2021, true, 'ftw', { x: 1, y: -3 }] };
 const result = SerializeSimple.serialize(obj);
@@ -21,13 +21,13 @@ The `deserialize` method takes a serialized string as input and returns native J
 
 ## More Details and Raison d'Etre
 
-When using `serialize-simple`, your application can invoke a command line
+When using `serialize_simple`, your application can invoke a command line
 program (written in Python, for example) and send a list of parameters
 without worrying about unpredictable shell behavior encountering special
 characters.
 
 Escaping dynamically created objects for shell command safety is typically both
-painstaking and error prone. `serialize-simple` is an easy solution.
+painstaking and error prone. `serialize_simple` is an easy solution.
 
 This module uses standard tech, thus providing complete interoperability among
 various languages, frameworks, operating systems, and environments.
@@ -61,7 +61,7 @@ def main():
   serialized_str = sys.argv[1]
   # => %7B%22port%22%3A9393%2C%22host%22%3A%22cezanne.museum%22%2C%22baroque%22%3Afalse%7D
 
-  # deserialize string created by Deno's serialize-simple module
+  # deserialize string created by Deno's serialize_simple module
   native_object = deserialize(serialized_str)
 
   print(native_object) # => {'port': 9393, 'host': 'cezanne.museum', 'baroque': False}
