@@ -80,10 +80,10 @@ const getExistingChecksum = (obj: ChecksumObject): string => {
   if (typeof obj === 'object') {
     const expectedKeys = ['v', '_c'];
     const objKeys = Object.keys(obj);
-    const sameMessageShape = (expectedKeys.length == objKeys.length) && expectedKeys.every((el, idx) => {
+    const isSameMessageShape = (expectedKeys.length == objKeys.length) && expectedKeys.every((el, idx) => {
       return el === objKeys[idx];
     });
-    return sameMessageShape && HEX_STRING_RX.test(obj._c) ? obj._c : '';
+    return isSameMessageShape && HEX_STRING_RX.test(obj._c) ? obj._c : '';
   }
   return ''
 }

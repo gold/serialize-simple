@@ -22,25 +22,26 @@ The `deserialize` method takes a serialized string as input and returns native J
 ## Security
 
 When serializing your data, you can optionally have a checksum embedded in the
-serialzed object. This value is used to check the integrity when deserializing.
+serialized object. This value is used to check data integrity when deserializing.
 
 The deserialize operation will automatically detect if the serialized object had
-included a checksum or not. If it does detect a checksum, the deserialize method
-will automatically validate the integrity of the serialized object. If valid,
-deserialize returns the original object. If checksum is not valid, deserialize
-throws an exception.
+included a checksum or not. If it does detect an embedded checksum, the
+deserialize method will automatically validate the integrity of the serialized
+object. If valid, deserialize returns the original object. If checksum is not
+valid, deserialize throws an exception.
 
 ```javascript
 const data = { description: 'critical information', coefficient: 1.07 };
+
+// Add security with optional second argument.
 const includeChecksum = true;
 const serializedObj = serialize(data, includeChecksum);
 
 try {
   const originalData = deserialize(serializedObj);
 } catch (e) {
-  // The serializedObj had been tampered with en route
-  // if e.name === 'ChecksumError'
-console.info(e);
+  // The serializedObj had been tampered with en route if e.name === 'ChecksumError'
+  console.info(e);
 }
 ```
 
@@ -94,6 +95,9 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
+Note: Examine the source code if you want to port the checksum security
+mechanism to another language.
 
 ## Contribute
 
