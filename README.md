@@ -19,18 +19,43 @@ language/system:
 
 The `deserialize` method takes a serialized string as input and returns native JavaScript object.
 
-## More Details and Raison d'Etre
+## Security
+
+When serializing your data, you can optionally have a checksum embedded in the
+serialzed object. This value is used to check the integrity when deserializing.
+
+The deserialize operation will automatically detect if the serialized object had
+included a checksum or not. If it does detect a checksum, the deserialize method
+will automatically validate the integrity of the serialized object. If valid,
+deserialize returns the original object. If checksum is not valid, deserialize
+throws an exception.
+
+```javascript
+const data = { description: 'critical information', coefficient: 1.07 };
+const includeChecksum = true;
+const serializedObj = serialize(data, includeChecksum);
+
+try {
+  const originalData = deserialize(serializedObj);
+} catch (e) {
+  // The serializedObj had been tampered with en route
+  // if e.name === 'ChecksumError'
+console.info(e);
+}
+```
+
+## More Details
+The `serialize_simple` module uses standard tech, thus providing complete
+interoperability among various languages, frameworks, operating systems, and
+environments.
+
+Escaping dynamically created objects for shell command safety is painstaking and
+error prone. `serialize_simple` is an easy solution.
 
 When using `serialize_simple`, your application can invoke a command line
 program (written in Python, for example) and send a list of parameters
 without worrying about unpredictable shell behavior encountering special
 characters.
-
-Escaping dynamically created objects for shell command safety is typically both
-painstaking and error prone. `serialize_simple` is an easy solution.
-
-This module uses standard tech, thus providing complete interoperability among
-various languages, frameworks, operating systems, and environments.
 
 ## Interoperability Example: Python Port
 

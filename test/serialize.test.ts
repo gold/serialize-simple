@@ -2,6 +2,21 @@ import { assertEquals } from 'https://deno.land/std@0.85.0/testing/asserts.ts';
 import { serialize, deserialize } from '../mod.ts';
 
 Deno.test({
+  name: 'serialize object with checksum',
+  fn: () => {
+    const obj = {
+      who: 'Debussy',
+      when: '19th-20th century',
+      isComposer: false
+    };
+    const expectedResult = '%7B%22v%22%3A%7B%22who%22%3A%22Debussy%22%2C%22when%22%3A%2219th-20th%20century%22%2C%22isComposer%22%3Afalse%7D%2C%22_c%22%3A%226708f558a8209d89741e85e8976b4c33b6369b6896d6e091deb9bb7c6c9776af%22%7D'
+    const includeChecksum = true;
+    const actualResult = serialize(obj, includeChecksum);
+    assertEquals(expectedResult, actualResult);
+  }
+});
+
+Deno.test({
   name: 'serialize object',
   fn: () => {
     const obj = {
@@ -71,30 +86,42 @@ Deno.test({
   }
 });
 
+Deno.test({
+  name: 'deserialize object with checksum',
+  fn: () => {
+    const serializedStr = '%7B%22v%22%3A%7B%22who%22%3A%22Debussy%22%2C%22when%22%3A%2219th-20th%20century%22%2C%22isComposer%22%3Afalse%7D%2C%22_c%22%3A%226708f558a8209d89741e85e8976b4c33b6369b6896d6e091deb9bb7c6c9776af%22%7D'
+    const obj = deserialize(serializedStr);
+    assertEquals(serializedStr.length > 1, true);
+  }
+});
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // bad input tests
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Deno.test({
-  name: 'deserialize with invalid input, do not throw exception',
-  fn: () => {
-    // correctly URL encoded, but invalid JSON
-    const badInput = '%5B2021%2Ctrue%2Cftw%22%2C%7B%22x%22%3A1%2C%22y%22%3A-3%7D%5D';
-    const actualResult = deserialize(badInput);
-    const expectedResult = {};
-    assertEquals(actualResult, expectedResult);
-  }
-});
-
-Deno.test({
-  name: 'deserialize with invalid input, throw exception',
+  name: 'deserialize with badly formed input, throw exception',
   fn: () => {
     // correctly URL encoded, but invalid JSON
     const badInput = '%5B2021%2Ctrue%2Cftw%22%2C%7B%22x%22%3A1%2C%22y%22%3A-3%7D%5D';
     const shouldThrow = true;
     try {
-      deserialize(badInput, shouldThrow);
+      deserialize(badInput);
     } catch (e) {
       assertEquals(e instanceof SyntaxError, true);
+    }
+  }
+});
+
+Deno.test({
+  name: 'deserialize object with invalid checksum, throw exception',
+  fn: () => {
+    const serializedStr = '%7B%22v%22%3A%7B%22who%22%3A%22DDebussy%22%2C%22when%22%3A%2219th-20th%20century%22%2C%22isComposer%22%3Afalse%7D%2C%22_c%22%3A%226708f558a8209d89741e85e8976b4c33b6369b6896d6e091deb9bb7c6c9776af%22%7D'
+    //                                                    ^
+    //                                                 added "D"
+    try {
+      const obj = deserialize(serializedStr);
+    } catch (e) {
+      assertEquals(e.name, 'ChecksumError');
     }
   }
 });
